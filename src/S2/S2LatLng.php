@@ -275,14 +275,12 @@ class S2LatLng {
     return approxEquals(o, 1e-9);
     }
     */
-    public
-    function __toString()
+    public function __toString()
     {
         return "(" . $this->latRadians . ", " . $this->lngRadians . ")";
     }
 
-    public
-    function toStringDegrees()
+    public function toStringDegrees()
     {
         return "(" . $this->latDegrees() . ", " . $this->lngDegrees() . ")";
     }
