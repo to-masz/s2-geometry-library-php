@@ -284,5 +284,5 @@ class S2LatLng {
     {
         return "(" . $this->latDegrees() . ", " . $this->lngDegrees() . ")";
     }
-    
+
 }
