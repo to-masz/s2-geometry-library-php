@@ -49,7 +49,7 @@ class S2 {
     }
 
     /** Mapping Hilbert traversal order to orientation adjustment mask. */
-    public static $POS_TO_ORIENTATION = array(
+    private static $POS_TO_ORIENTATION = array(
         S2CellId::SWAP_MASK,
         0,
         0,
