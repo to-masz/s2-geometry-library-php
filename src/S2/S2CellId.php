@@ -389,7 +389,8 @@ class S2CellId {
      * public static S2CellId end(int level) {
      * return fromFacePosLevel(5, 0, 0).childEnd(level);
      * }
-     * /**
+     
+    /**
      * Decodes the cell id from a compact text string suitable for display or
      * indexing. Cells at lower levels (i.e. larger cells) are encoded into
      * fewer characters. The maximum token length is 16.
@@ -410,8 +411,8 @@ class S2CellId {
             return self::none();
         }
 
-//    $value = hexdec(strrev($token));
-        $value = hexdec($token);
+        $value = str_pad($token, 16, '0');
+        $value = hexdec($value);
         return new S2CellId($value);
     }
 
