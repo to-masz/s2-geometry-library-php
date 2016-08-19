@@ -89,7 +89,7 @@ class S2RegionCoverer
         // TODO(kirilll?): 10 is a completely random number, work out a better
         // estimate
 //    $this->candidateQueue = array();//new PriorityQueue<QueueEntry>(10, new QueueEntriesComparator());
-        $this->candidateQueue = new SplPriorityQueue(); //new PriorityQueue<QueueEntry>(10, new QueueEntriesComparator());
+        $this->candidateQueue = new \SplPriorityQueue(); //new PriorityQueue<QueueEntry>(10, new QueueEntriesComparator());
     }
 
     // Set the minimum and maximum cell level to be used. The default is to use
@@ -193,8 +193,8 @@ class S2RegionCoverer
      * Computes a list of cell ids that covers the given region and satisfies the
      * various restrictions specified above.
      *
-     * @param region The region to cover
-     * @param S2CellId[] covering The list filled in by this method
+     * @param S2Region $region The region to cover
+     * @param S2CellId[] $covering The list filled in by this method
      */
     public function getCovering(S2Region $region, &$covering)
     {
@@ -219,8 +219,8 @@ class S2RegionCoverer
      * Computes a list of cell ids that is contained within the given region and
      * satisfies the various restrictions specified above.
      *
-     * @param region The region to fill
-     * @param interior The list filled in by this method
+     * @param S2Region $region The region to fill
+     * @param S2CellId[] $interior The list filled in by this method
      */
 //  public void getInteriorCovering(S2Region region, ArrayList<S2CellId> interior) {
 //    S2CellUnion tmp = getInteriorCovering(region);
@@ -298,6 +298,8 @@ class S2RegionCoverer
      * Process a candidate by either adding it to the result list or expanding its
      * children and inserting it into the priority queue. Passing an argument of
      * NULL does nothing.
+     *
+     * @param Candidate $candidate
      */
     private function addCandidate(Candidate $candidate = null)
     {
@@ -351,6 +353,11 @@ class S2RegionCoverer
      * Populate the children of "candidate" by expanding the given number of
      * levels from the given cell. Returns the number of children that were marked
      * "terminal".
+     * @param Candidate $candidate
+     * @param S2Cell $cell
+     * @param $numLevels
+     *
+     * @return int
      */
     private function expandChildren(Candidate $candidate, S2Cell $cell, $numLevels)
     {
@@ -437,7 +444,10 @@ class S2RegionCoverer
         }
     }
 
-    /** Generates a covering and stores it in result. */
+    /** Generates a covering and stores it in result.
+     *
+     * @param S2Region $region
+     */
     private function getCoveringInternal(S2Region $region)
     {
         // Strategy: Start with the 6 faces of the cube. Discard any
@@ -467,8 +477,9 @@ class S2RegionCoverer
 
             // logger.info("Pop: " + candidate.cell.id());
 //        echo "Pop: " . $candidate . "\n";
-            if ($candidate->cell->level() < $this->minLevel || $candidate->numChildren == 1
-                || $this->result->size() + ($this->interiorCovering ? 0 : $this->candidateQueue->size()) + $candidate->numChildren <= $this->maxCells
+            if ($candidate->cell->level() < $this->minLevel
+                || $candidate->numChildren == 1
+                || count($this->result) + ($this->interiorCovering ? 0 : $this->candidateQueue->count()) + $candidate->numChildren <= $this->maxCells
             ) {
                 // Expand this candidate into its children.
                 for ($i = 0; $i < $candidate->numChildren; ++$i) {
@@ -485,7 +496,7 @@ class S2RegionCoverer
         }
 
         unset($this->candidateQueue);
-        $this->candidateQueue = new SplPriorityQueue();
+        $this->candidateQueue = new \SplPriorityQueue();
         $this->region = null;
     }
 
