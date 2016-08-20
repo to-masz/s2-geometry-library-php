@@ -59,44 +59,51 @@ class S2Cell implements S2Region
   public boolean isLeaf() {
     return level == S2CellId.MAX_LEVEL;
   }
-
-  public S2Point getVertex(int k) {
-    return S2Point.normalize(getVertexRaw(k));
-  }
-
-  /**
-   * Return the k-th vertex of the cell (k = 0,1,2,3). Vertices are returned in
-   * CCW order. The points returned by GetVertexRaw are not necessarily unit
-   * length.
-   *#/
-  public S2Point getVertexRaw(int k) {
-    // Vertices are returned in the order SW, SE, NE, NW.
-    return S2Projections.faceUvToXyz(face, uv[0][(k >> 1) ^ (k & 1)], uv[1][k >> 1]);
-  }
-
-  public S2Point getEdge(int k) {
-    return S2Point.normalize(getEdgeRaw(k));
-  }
-
-  public S2Point getEdgeRaw(int k) {
-    switch (k) {
-      case 0:
-        return S2Projections.getVNorm(face, uv[1][0]); // South
-      case 1:
-        return S2Projections.getUNorm(face, uv[0][1]); // East
-      case 2:
-        return S2Point.neg(S2Projections.getVNorm(face, uv[1][1])); // North
-      default:
-        return S2Point.neg(S2Projections.getUNorm(face, uv[0][0])); // West
+*/
+    /**
+     * @param int $k
+     * @return S2Point
+     */
+    public function getVertex($k) {
+        return S2Point::normalize($this->getVertexRaw($k));
     }
-  }
+
+    /**
+     * Return the k-th vertex of the cell (k = 0,1,2,3). Vertices are returned in
+     * CCW order. The points returned by getVertexRaw are not necessarily unit
+     * length.
+     *
+     * @param $k
+     * @return S2Point
+     */
+    public function getVertexRaw($k) {
+        // Vertices are returned in the order SW, SE, NE, NW.
+        return S2Projections::faceUvToXyz($this->face, $this->uv[0][($k >> 1) ^ ($k & 1)], $this->uv[1][$k >> 1]);
+    }
+/*
+    public S2Point getEdge(int k) {
+        return S2Point.normalize(getEdgeRaw(k));
+    }
+
+    public S2Point getEdgeRaw(int k) {
+        switch (k) {
+            case 0:
+                return S2Projections.getVNorm(face, uv[1][0]); // South
+            case 1:
+                return S2Projections.getUNorm(face, uv[0][1]); // East
+            case 2:
+                return S2Point.neg(S2Projections.getVNorm(face, uv[1][1])); // North
+            default:
+            return S2Point.neg(S2Projections.getUNorm(face, uv[0][0])); // West
+        }
+    }
 */
     /**
      * Return the inward-facing normal of the great circle passing through the
      * edge from vertex k to vertex k+1 (mod 4). The normals returned by
      * GetEdgeRaw are not necessarily unit length.
      *
-     *  If this is not a leaf cell, set children[0..3] to the four children of
+     * If this is not a leaf cell, set children[0..3] to the four children of
      * this cell (in traversal order) and return true. Otherwise returns false.
      * This method is equivalent to the following:
      *
@@ -105,6 +112,7 @@ class S2Cell implements S2Region
      *
      * except that it is more than two times faster.
      * @param S2Cell[] $children
+     * @return bool
      */
     public function subdivide(&$children)
     {
