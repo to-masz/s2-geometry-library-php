@@ -195,7 +195,7 @@ class S2LatLng {
      *
      * @param S2LatLng $o
      * @param float    $radius
-     * @return string
+     * @return float
      */
     public function getDistanceWithRadius($o, $radius)
     {
@@ -207,7 +207,7 @@ class S2LatLng {
      * radius of {@link #EARTH_RADIUS_METERS}.
      *
      * @param $o
-     * @return S1Angle
+     * @return float
      */
     public function getEarthDistance($o)
     {
