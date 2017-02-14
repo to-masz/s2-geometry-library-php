@@ -458,25 +458,28 @@ class S2CellId {
      * would be at most 3 bytes (9 bytes hex vs. 6 bytes base-64).
      *
      * @return string the encoded cell id
-     *
-     * public String toToken() {
-     * if (id == 0) {
-     * return "X";
-     * }
-     * String hex = Long.toHexString(id).toLowerCase(Locale.ENGLISH);
-     * StringBuilder sb = new StringBuilder(16);
-     * for (int i = hex.length(); i < 16; i++) {
-     * sb.append('0');
-     * }
-     * sb.append(hex);
-     * for (int len = 16; len > 0; len--) {
-     * if (sb.charAt(len - 1) != '0') {
-     * return sb.substring(0, len);
-     * }
-     * }
-     * throw new RuntimeException("Shouldn't make it here");
-     * }
-     * /**
+     */
+    public function toToken() {
+      if ($this->id == 0) {
+        return "X";
+      }
+      $hex = strtolower(dechex($this->id));
+      $sb = '';
+      for ($i = strlen($hex); $i < 16; $i++) {
+        $sb .= '0';
+      }
+      $sb .= $hex;
+      for ($len = 16; $len > 0; $len--) {
+        if ($sb[$len - 1] != '0') {
+            return substr($sb, 0, $len);
+        }
+      }
+      throw new \RuntimeException("Shouldn't make it here");
+     }
+
+
+
+     /**
      * Returns true if (current * 10) + digit is a number too large to be
      * represented by an unsigned long.  This is useful for detecting overflow
      * while parsing a string representation of a number.
@@ -894,13 +897,15 @@ class S2CellId {
 
     /*
 
-  /**
-   * Returns true if x1 < x2, when both values are treated as unsigned.
-   *#/
-  public static boolean unsignedLongLessThan(long x1, long x2) {
-    return (x1 + Long.MIN_VALUE) < (x2 + Long.MIN_VALUE);
-  }
+    /**
+    * Returns true if x1 < x2, when both values are treated as unsigned.
     */
+    public static function unsignedLongLessThan($x1, $x2)
+    {
+        return ($x1 & ~PHP_INT_MAX) < ($x2 & ~PHP_INT_MAX) // compare first bit
+            || (($x1 & ~PHP_INT_MAX) == ($x2 & ~PHP_INT_MAX)
+                && ($x1 & PHP_INT_MAX) < ($x2 & PHP_INT_MAX));
+    }
 
     /**
      * Returns true if x1 > x2, when both values are treated as unsigned.
@@ -911,7 +916,9 @@ class S2CellId {
      */
     public static function unsignedLongGreaterThan($x1, $x2)
     {
-        return ($x1 & ~PHP_INT_MAX) > ($x2 & ~PHP_INT_MAX);
+        return ($x1 & ~PHP_INT_MAX) > ($x2 & ~PHP_INT_MAX) // compare first bit
+            || (($x1 & ~PHP_INT_MAX) == ($x2 & ~PHP_INT_MAX)
+                && ($x1 & PHP_INT_MAX) > ($x2 & PHP_INT_MAX));
     }
 
     /*
