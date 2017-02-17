@@ -607,47 +607,44 @@ class S2CellId {
      * neighbors.
      * Requires: nbr_level >= this->level(). Note that for cells adjacent to a
      * face vertex, the same neighbor may be appended more than once.
-     *#/
-     * public void getAllNeighbors(int nbrLevel, List<S2CellId> output) {
-     * MutableInteger i = new MutableInteger(0);
-     * MutableInteger j = new MutableInteger(0);
-     * int face = toFaceIJOrientation(i, j, null);
-     * // Find the coordinates of the lower left-hand leaf cell. We need to
-     * // normalize (i,j) to a known position within the cell because nbr_level
-     * // may be larger than this cell's level.
-     * int size = 1 << (MAX_LEVEL - level());
-     * i.setValue(i.intValue() & -size);
-     * j.setValue(j.intValue() & -size);
-     * int nbrSize = 1 << (MAX_LEVEL - nbrLevel);
-     * // assert (nbrSize <= size);
-     * // We compute the N-S, E-W, and diagonal neighbors in one pass.
-     * // The loop test is at the end of the loop to avoid 32-bit overflow.
-     * for (int k = -nbrSize;; k += nbrSize) {
-     * boolean sameFace;
-     * if (k < 0) {
-     * sameFace = (j.intValue() + k >= 0);
-     * } else if (k >= size) {
-     * sameFace = (j.intValue() + k < MAX_SIZE);
-     * } else {
-     * sameFace = true;
-     * // North and South neighbors.
-     * output.add(fromFaceIJSame(face, i.intValue() + k,
-     * j.intValue() - nbrSize, j.intValue() - size >= 0).parent(nbrLevel));
-     * output.add(fromFaceIJSame(face, i.intValue() + k, j.intValue() + size,
-     * j.intValue() + size < MAX_SIZE).parent(nbrLevel));
-     * }
-     * // East, West, and Diagonal neighbors.
-     * output.add(fromFaceIJSame(face, i.intValue() - nbrSize,
-     * j.intValue() + k, sameFace && i.intValue() - size >= 0).parent(
-     * nbrLevel));
-     * output.add(fromFaceIJSame(face, i.intValue() + size, j.intValue() + k,
-     * sameFace && i.intValue() + size < MAX_SIZE).parent(nbrLevel));
-     * if (k >= size) {
-     * break;
-     * }
-     * }
-     * }
      */
+     public function getAllNeighbors($nbrLevel, &$output) {
+         $i = 0;
+         $j = 0;
+         $null = null;
+         $face = $this->toFaceIJOrientation($i, $j, $null);
+         // Find the coordinates of the lower left-hand leaf cell. We need to
+         // normalize (i,j) to a known position within the cell because nbr_level
+         // may be larger than this cell's level.
+         $size = 1 << (self::MAX_LEVEL - $this->level());
+        $i = $i & -$size;
+        $j = $j & -$size;
+
+         $nbrSize = 1 << (self::MAX_LEVEL - $nbrLevel);
+         // assert (nbrSize <= size);
+         // We compute the N-S, E-W, and diagonal neighbors in one pass.
+         // The loop test is at the end of the loop to avoid 32-bit overflow.
+         for ($k = -$nbrSize;; $k += $nbrSize) {
+             $sameFace = false;
+             if ($k < 0) {
+                $sameFace = ($j + $k >= 0);
+             } else if ($k >= $size) {
+                $sameFace = ($j + $k < self::MAX_SIZE);
+             } else {
+                $sameFace = true;
+                 // North and South neighbors.
+                 $output[] = $this->fromFaceIJSame($face, $i + $k, $j - $nbrSize, $j - $size >= 0)->parent($nbrLevel);
+                 $output[] = $this->fromFaceIJSame($face, $i + $k, $j + $size, $j + $size < self::MAX_SIZE)->parent($nbrLevel);
+             }
+             // East, West, and Diagonal neighbors.
+             $output[] = $this->fromFaceIJSame($face, $i - $nbrSize, $j + $k, $sameFace && $i - $size >= 0)->parent($nbrLevel);
+             $output[] = $this->fromFaceIJSame($face, $i + $size, $j + $k, $sameFace && $i + $size < self::MAX_SIZE)->parent($nbrLevel);
+             if ($k >= $size) {
+                break;
+             }
+         }
+     }
+
 
      // ///////////////////////////////////////////////////////////////////
      // Low-level methods.
