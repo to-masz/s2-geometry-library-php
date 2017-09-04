@@ -333,7 +333,7 @@ class S2RegionCoverer
             // intersect the region, but may not be contained by it - we need to
             // subdivide them further.
             $candidate->isTerminal = true;
-            echo "addCandidato recurse: " . $candidate->cell->id() . "\n";
+//            echo "addCandidato recurse: " . $candidate->cell->id() . "\n";
             $this->addCandidate($candidate);
         } else {
             // We negate the priority so that smaller absolute priorities are returned
@@ -439,7 +439,7 @@ class S2RegionCoverer
         $face_cells = self::FACE_CELLS();
         for ($face = 0; $face < 6; ++$face) {
             $c = $this->newCandidate($face_cells[$face]);
-            echo "addCandidato getInitialCandidates_default: " . $c->cell->id() . "\n";
+//            echo "addCandidato getInitialCandidates_default: " . $c->cell->id() . "\n";
             $this->addCandidate($c);
         }
     }
