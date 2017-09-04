@@ -332,7 +332,7 @@ class S2LatLngRect implements S2Region
         if ($ll instanceof S2LatLng) {
             return ($this->lat->contains($ll->lat()->radians()) && $this->lng->contains($ll->lng()->radians()));
         } else if ($ll instanceof S2LatLngRect) {
-            return $this->lat->contains($ll->lat()) && $this->lng->contains($ll->lng());
+            return $this->lat->contains($ll->lat()) && $this->lng->contains($ll->lng()->hi());
         } else if ($ll instanceof S2Cell) {
             return $this->contains($ll->getRectBound());
         } else if ($ll instanceof S2Point) {
